@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shelly Variants • Three.js</title>
+    <style>
+      :root { --ui-bg: rgba(24,24,24,.8); --ui-border: rgba(255,255,255,.12); }
+      html, body { height: 100%; }
+      body { margin: 0; overflow: hidden; background: #111; color: #eee; font: 14px/1.4 system-ui, sans-serif; }
+      .panel {
+        position: fixed; top: 12px; left: 12px; z-index: 10;
+        background: var(--ui-bg); border: 1px solid var(--ui-border);
+        border-radius: 10px; padding: 10px 12px; backdrop-filter: blur(6px);
+      }
+      label { font-size: 12px; opacity: .85; display:block; margin-bottom: 6px; }
+      select, button {
+        background: #1f1f1f; color: #eee; border: 1px solid var(--ui-border);
+        border-radius: 8px; padding: 6px 8px;
+      }
+      .row { display:flex; gap:8px; align-items:center; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+          "jsm/":   "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+        }
+      }
+      </script>
+      
+    <!-- <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.131/build/three.module.js",
+          "jsm/": "https://cdn.jsdelivr.net/npm/three@0.131/examples/jsm/"
+        }
+      }
+    </script> -->
+  </head>
+  <body>
+    <div class="panel">
+      <label for="variant">Shelly model</label>
+      
+      <div class="row">
+        <select id="variant">
+          <option value="plus1pm">Shelly Plus 1PM</option>
+          <option value="plus2pm" selected>Shelly Plus 2PM</option>
+          <option value="plusi4">Shelly Plus I4</option>
+        </select>
+        <button id="recenter">Re-center</button>
+      </div>
+
+
+
+<!-- 
+      <label for="variant">Shelly model</label> -->
+      <!-- <div class="row">
+        <select id="variant">
+          <option value="plus2pm" selected>Shelly Plus 2PM</option>
+          <option value="plus1pm">Shelly Plus 1PM</option>
+          <option value="plusi4">Shelly Plus i4</option>
+        </select>
+        <select id="variant">
+          <option value="plus2pm" selected>Shelly Plus 2PM</option>
+          <option value="plus1pm">Shelly Plus 1PM</option>
+          <option value="plusi4">Shelly Plus i4</option>
+        </select>
+        <button id="recenter">Re-center</button>
+      </div> -->
+    </div>
+
+    <script type="module" src="index.js"></script>
+  </body>
+</html>
