@@ -8,13 +8,19 @@ import { RGBELoader } from "jsm/loaders/RGBELoader.js";
 const VARIANTS = {
   plus1pm: { label: "Shelly Plus 1PM", url: "./assets/shelly2.glb", scale: 1 },
   plus2pm: { label: "Shelly Plus 2PM", url: "./assets/shelly.glb", scale: 1 },
-  plusi4:  { label: "Shelly Plus i4",  url: "./assets/shelly1.glb", scale: 1 }
+  plusi4:  { label: "Shelly Plus i4",  url: "./assets/shelly1.glb", scale: 1 },
+  duorgbw: { label: "Shelly Duo RGBW", url: "./assets/duo_rgbw.glb", scale: 1 },
+  pro1:  { label: "Shelly Pro 1",  url: "./assets/pro1.glb", scale: 1 },
+  pro1pm:  { label: "Shelly Pro 1PM",  url: "./assets/pro1pm.glb", scale: 1 },
+  pro2pm:  { label: "Shelly Pro 2PM",  url: "./assets/pro2pm.glb", scale: 1 },
+  pro1dimmer:  { label: "Shelly Pro Dimmer1PM",  url: "./assets/pro1dimmer.glb", scale: 1 },
+  pro3em:  { label: "Shelly Pro 3EM",  url: "./assets/pro3em.glb", scale: 1 },
 };
 
 // --- Three.js setup ----------------------------------------------------------
 const w = window.innerWidth, h = window.innerHeight;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1a1a1a);
+scene.background = new THREE.Color(0x1a1a1a); // default dark gray
 
 const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 1000);
 camera.position.set(3, 2, 5);
@@ -88,6 +94,8 @@ async function setVariant(name) {
   currentModel = model;
   scene.add(currentModel);
   frameObject(model, camera, controls);
+  placeGridAtModelFloor(model);
+  setStatus(`Loaded: ${cfg.label}`);
 }
 
 function frameObject(object, cam, controls) {
@@ -106,19 +114,82 @@ function frameObject(object, cam, controls) {
   controls.update();
 }
 
-// --- UI wiring --------------------------------------------------------------
+// --- Grid Helper ------------------------------------------------------------
+const grid = new THREE.GridHelper(10, 20, 0x444444, 0x222222);
+grid.material.opacity = 0.35;
+grid.material.transparent = true;
+grid.visible = false;
+scene.add(grid);
+
+function placeGridAtModelFloor(object3D) {
+  const box = new THREE.Box3().setFromObject(object3D);
+  grid.position.y = box.min.y;
+}
+
+// --- Buttons wiring ---------------------------------------------------------
+const btnAuto = document.getElementById("btnAuto");
+const btnBg   = document.getElementById("btnBg");
+const btnGrid = document.getElementById("btnGrid");
+
+// create a small status line under the panel row (no HTML edit needed)
+const panelEl = document.querySelector(".panel");
+const statusEl = document.createElement("div");
+statusEl.id = "status";
+statusEl.style.marginTop = "8px";
+statusEl.style.opacity = "0.75";
+statusEl.style.fontSize = "12px";
+panelEl.appendChild(statusEl);
+
+function setStatus(text) {
+  statusEl.textContent = text || "";
+}
+
+btnAuto.addEventListener("click", () => {
+  controls.autoRotate = !controls.autoRotate;
+  btnAuto.setAttribute("aria-pressed", String(controls.autoRotate));
+  setStatus(`Auto-rotate: ${controls.autoRotate ? "ON" : "OFF"}`);
+});
+
+// Background toggle FIX:
+// Instead of toggling the page body, toggle the THREE background + gradient layer.
+let bgOn = true;                          // default ON (matches initial scene)
+btnBg.setAttribute("aria-pressed", "true");
+btnBg.addEventListener("click", () => {
+  bgOn = !bgOn;
+
+  // show/hide the gradient sprites
+  gradientBackground.visible = bgOn;
+
+  // switch scene clear color to emphasize change
+  scene.background = new THREE.Color(bgOn ? 0x1a1a1a : 0x111111);
+  renderer.setClearColor(scene.background, 1);
+
+  btnBg.setAttribute("aria-pressed", String(bgOn));
+  setStatus(`Background: ${bgOn ? "ON" : "OFF"}`);
+});
+
+btnGrid.addEventListener("click", () => {
+  grid.visible = !grid.visible;
+  btnGrid.setAttribute("aria-pressed", String(grid.visible));
+  setStatus(`Grid: ${grid.visible ? "ON" : "OFF"}`);
+});
+
+// --- Variant selector & recenter -------------------------------------------
 const selectEl = document.getElementById("variant");
 const recenterBtn = document.getElementById("recenter");
 
 selectEl.addEventListener("change", () => setVariant(selectEl.value));
 recenterBtn.addEventListener("click", () => {
-  if (currentModel) frameObject(currentModel, camera, controls);
+  if (currentModel) {
+    frameObject(currentModel, camera, controls);
+    setStatus("Re-centered");
+  }
 });
 
-// Load initial
+// Load initial model
 setVariant(selectEl.value);
 
-// --- Loop & resize ----------------------------------------------------------
+// --- Render loop & resize ---------------------------------------------------
 function animate() {
   requestAnimationFrame(animate);
   controls.update();

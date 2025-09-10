@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,11 +11,122 @@
       :root { --ui-bg: rgba(24,24,24,.8); --ui-border: rgba(255,255,255,.12); }
       html, body { height: 100%; }
       body { margin: 0; overflow: hidden; background: #111; color: #eee; font: 14px/1.4 system-ui, sans-serif; }
-      .panel {
-        position: fixed; top: 12px; left: 12px; z-index: 10;
-        background: var(--ui-bg); border: 1px solid var(--ui-border);
-        border-radius: 10px; padding: 10px 12px; backdrop-filter: blur(6px);
+      /* Base panel look */
+.panel {
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+/* Bottom-center selector */
+.panel-select {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  padding: 14px 18px;
+  z-index: 10;
+  min-width: 540px;
+  max-width: 70vw;
+}
+.panel-title {
+  font-size: 14px;
+  opacity: .85;
+  margin: 0 0 8px;
+}
+
+/* Large, pill-style dropdown (matches your mockup) */
+.select-lg {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #1f1f1f;
+  color: #e5e7eb;
+  border: 1px solid var(--ui-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* Right-side controls panel */
+.panel-controls {
+  position: fixed;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  padding: 12px;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 150px; /* tweak to taste */
+}
+
+/* Buttons + pressed state */
+.btn {
+  background: #1f1f1f;
+  color: #eee;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn[aria-pressed="true"] {
+  outline: 2px solid rgba(102, 204, 238, .6);
+}
+
+/* Status text */
+.status {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+/* Mobile tweak: stack bottom panel tighter */
+@media (max-width: 720px) {
+  .panel-select { min-width: auto; width: 92vw; bottom: 20px; }
+  .panel-controls { right: 12px; width: 132px; }
+}
+
+      .mode-switch {
+        position: fixed;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        font-weight: 800;
+        font-size: 32px;
+        letter-spacing: 1px;
+        color: #e5e7eb;
+        text-decoration: none;
+        padding: 10px 22px;
+        border: 6px solid #ffffff;
+        border-radius: 12px;
+        background: rgba(0,0,0,0.55);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        backdrop-filter: blur(6px);
+        user-select: none;
       }
+  .mode-switch:hover { background: rgba(0,0,0,0.7); }
+      
+      .panel {
+        position: fixed;
+        bottom: 20px;       /* stick to bottom */
+        /*left: 50%;           move to center 
+        transform: translateX(-50%);
+        */
+        z-index: 10;
+        background: var(--ui-bg);
+        border: 1px solid var(--ui-border);
+        border-radius: 10px;
+        padding: 10px 12px;
+         backdrop-filter: blur(6px);
+    
+        }
+
       label { font-size: 12px; opacity: .85; display:block; margin-bottom: 6px; }
       select, button {
         background: #1f1f1f; color: #eee; border: 1px solid var(--ui-border);
@@ -39,19 +153,63 @@
     </script> -->
   </head>
   <body>
+    <a id="modeSwitch" class="mode-switch" href="#">2D/3D</a>
+
     <div class="panel">
-      <label for="variant">Shelly model</label>
+      <label for="variant">Shelly Models</label>
       
-      <div class="row">
+      <!-- <div class="row">
+        <select id="variant">
+          <option value="pro1">Shelly Pro 1</option>
+          <option value="pro1pm">Shelly Pro 1PM</option>
+          <option value="pro2pm">Shelly Pro 2PM</option>
+          <option value="pro1dimmer">Shelly Pro Dimmer1PM</option>
+          <option value="pro3em">Shelly Pro 3EM</option>
+        </select>
         <select id="variant">
           <option value="plus1pm">Shelly Plus 1PM</option>
-          <option value="plus2pm" selected>Shelly Plus 2PM</option>
+          <option value="plus2pm" selected>Gen 1</option>
           <option value="plusi4">Shelly Plus I4</option>
+          <option value="duorgbw">Shelly Duo RGBW</option>
+          <option value="pro1">Shelly Pro 1</option>
+          <option value="pro1pm">Shelly Pro 1PM</option>
+          <option value="pro2pm">Shelly Pro 2PM</option>
+          <option value="pro1dimmer">Shelly Pro Dimmer1PM</option>
+          <option value="pro3em">Shelly Pro 3EM</option>
         </select>
+        <select id="variant">
+          <option value="plus1pm">Shelly Plus 1PM</option>
+          <option value="plus2pm" selected>Gen 2/3/4</option>
+          <option value="plusi4">Shelly Plus I4</option>
+          <option value="duorgbw">Shelly Duo RGBW</option>
+          <option value="pro1">Shelly Pro 1</option>
+          <option value="pro1pm">Shelly Pro 1PM</option>
+          <option value="pro2pm">Shelly Pro 2PM</option>
+          <option value="pro1dimmer">Shelly Pro Dimmer1PM</option>
+          <option value="pro3em">Shelly Pro 3EM</option>
+        </select>
+        <select id="variant">
+          <option value="plus1pm">Shelly Plus 1PM</option>
+          <option value="plus2pm" selected>BLU</option>
+          <option value="plusi4">Shelly Plus I4</option>
+          <option value="duorgbw">Shelly Duo RGBW</option>
+          <option value="pro1">Shelly Pro 1</option>
+          <option value="pro1pm">Shelly Pro 1PM</option>
+          <option value="pro2pm">Shelly Pro 2PM</option>
+          <option value="pro1dimmer">Shelly Pro Dimmer1PM</option>
+          <option value="pro3em">Shelly Pro 3EM</option>
+        </select>
+      </div> -->
+      <!-- <button id="recenter">Re-center</button>
+      <button id="btnAuto" class="btn" aria-pressed="false" title="Auto rotate">Auto</button>
+      <button id="btnBg" class="btn" aria-pressed="false" title="Show background">Background</button>
+      <button id="btnGrid" class="btn" aria-pressed="false" title="Grid">Grid</button> -->
+      <!-- <div class="row">
         <button id="recenter">Re-center</button>
-      </div>
-
-
+        <button id="btnAuto" class="btn" aria-pressed="false" title="Auto rotate">Auto</button>
+        <button id="btnBg" class="btn" aria-pressed="false" title="Show background">Background</button>
+        <button id="btnGrid" class="btn" aria-pressed="false" title="Grid">Grid</button>
+      </div> -->
 
 <!-- 
       <label for="variant">Shelly model</label> -->
@@ -70,6 +228,59 @@
       </div> -->
     </div>
 
+    <!-- <div class="panel" id="status" style="bottom: 80px; font-size: 12px; opacity: .85;">
+      Loading...
+    </div> -->
+
+<!-- Bottom-center: device selection only -->
+<div class="panel panel-select" id="panelSelect">
+  <div class="panel-title">Shelly Models</div>
+  <div class="row">
+    <select id="variant" class="select-lg">
+      <option value="plus1pm">Shelly Plus 1PM</option>
+      <option value="plus2pm" selected>Shelly Plus 2PM</option>
+      <option value="plusi4">Shelly Plus I4</option>
+      <option value="duorgbw">Shelly Duo RGBW</option>
+      <option value="pro1">Shelly Pro 1</option>
+          <option value="pro1pm">Shelly Pro 1PM</option>
+          <option value="pro2pm">Shelly Pro 2PM</option>
+          <option value="pro1dimmer">Shelly Pro Dimmer1PM</option>
+          <option value="pro3em">Shelly Pro 3EM</option>
+
+    </select>
+    <select id="variant"  class="select-lg">
+      
+      <option value="pro1">Shelly Pro 1</option>
+      <option value="pro1pm" selected>Shelly Pro 1PM</option>
+      <option value="pro2pm">Shelly Pro 2PM</option>
+      <option value="pro1dimmer">Shelly Pro Dimmer1PM</option>
+      <option value="pro3em">Shelly Pro 3EM</option>
+    </select>
+    <div class="row">
+      
+    </div>
+  </div>
+</div>
+
+
+    <!-- Right side: view/control buttons + status -->
+<div class="panel panel-controls" id="panelControls">
+  <button id="recenter" class="btn">Re-center</button>
+  <button id="btnAuto" class="btn" aria-pressed="false">Auto</button>
+  <button id="btnBg" class="btn" aria-pressed="true">Background</button>
+  <button id="btnGrid" class="btn" aria-pressed="false">Grid</button>
+  <div id="status" class="status"> </div>
+</div>
+
     <script type="module" src="index.js"></script>
   </body>
 </html>
+
+
+
+
+
+
+
+
+
